@@ -9,6 +9,6 @@ if (!projectId || !dataset || !apiVersion) {
 export const client = createClient({
   projectId,
   dataset,
-  apiVersion,
-  useCdn: true, 
-})
+  apiVersion: '2023-10-01', 
+  useCdn: false,
+});

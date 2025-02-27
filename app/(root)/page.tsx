@@ -1,6 +1,6 @@
 import SearchForm from "@/components/SearchForm";
-import StartupCard from "@/components/StartupCard";
-import { client } from "@/sanity/lib/client";
+import StartupCard,{StartupTypeCard} from "@/components/StartupCard";
+import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 
 export default async function Home({ searchParams }: { searchParams: { query?: string } }) {
@@ -8,18 +8,11 @@ export default async function Home({ searchParams }: { searchParams: { query?: s
   
   // Fetch posts from Sanity
   let posts = [];
-  // const posts=[{
-  //   _createdAt:new Date(),
-  //   views:55,
-  //   author:{_id:1,name:"John Doe"},
-  //   _id:1,
-  //   description:'This is a description',
-  //   image:"https://pbs.twimg.com/profile_images/1834328195904282624/_CAUqMol_400x400.jpg",
-  //   category:"marvel",
-  //   title:"We Robots",
-  // }]
+
   try {
-    posts = await client.fetch(STARTUPS_QUERY);
+    // Correct fetch syntax using client.fetch or sanityFetch
+    const response = await sanityFetch({ query: STARTUPS_QUERY });
+    posts = response?.data || [];
   } catch (error) {
     console.error("Error fetching startups:", error);
   }
@@ -44,7 +37,7 @@ export default async function Home({ searchParams }: { searchParams: { query?: s
         </p>
         <ul className="mt-7 card_grid">
           {posts.length > 0 ? (
-            posts.map((post: StartupCardType) => (
+            posts.map((post: StartupTypeCard) => (
               <StartupCard key={post._id} post={post} />
             ))
           ) : (
@@ -52,6 +45,8 @@ export default async function Home({ searchParams }: { searchParams: { query?: s
           )}
         </ul>
       </section>
+      <SanityLive />
+
     </>
   );
 }
