@@ -14,7 +14,11 @@ export default async function Home({
 
   const session = await auth();
 
-  console.log(session?.id);
+  if (session) {
+    console.log(session.user?.name);
+  } else {
+    console.log("No session found");
+  }
 
   const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
 
