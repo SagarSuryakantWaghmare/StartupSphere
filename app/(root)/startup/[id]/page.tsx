@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/utils";
 import { Suspense } from "react";
 import markdownit from "markdown-it";
 import { Skeleton } from "@/components/ui/skeleton";
+import View from "@/components/View";
 const md=markdownit();
 export const experimental_ppr = true;
 
@@ -73,7 +74,7 @@ const page = async ({ params }: { params: { id: string } }) => {
         <hr className="divider" />
         {/* TODO:Add the recommended feature here */}
         <Suspense fallback={<Skeleton className="view_skeleton" />}>
-         
+         <View id={id}/>
         </Suspense>
       </section>
     </>
