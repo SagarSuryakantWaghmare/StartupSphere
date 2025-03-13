@@ -7,10 +7,17 @@ import { Button } from "./ui/button";
 import { Send } from "react-feather";;
 const StartupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [pitch, setPitch] = useState<string>("**Hello world!!!**");
+  const [pitch, setPitch] = useState<string>("Briefly describe your idea and what problem it solves");
   const isPending=false;
   return (
     <>
+    {/* 
+    The form may be be presented to create the startup and then store in the sanity and we have to retrive for the 
+    that to  get the idea about how the total info about the overall project of the startup 
+    it will retrive all the info form the sanity
+    There is small error which may be give some conflict in the retrive and this must be a unique one's
+    Title and other content should be store and retrive form the sanity
+     */}
       <form action={() => {}} className="startup-form">
         <div>
           <label htmlFor="title" className="startup-form_label">
@@ -83,10 +90,13 @@ const StartupForm = () => {
             className="startup-form_textarea"
             id="pitch"
             preview="edit"
+            textareaProps={{
+              placeholder:"Briefly Describe your idea and what problem it solves",
+            }}
           />
           {errors.pitch && <p className="startup-form_error">{errors.pitch}</p>}
         </div>
-        <Button type="submit" className="startup-form_button"
+        <Button type="submit" className="startup-form_btn "
         disabled={isPending}>
          {isPending ? "Submitting..." : "Submit Your Pitch"}
          <Send className="size-6 ml-2"/>
