@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import markdownit from "markdown-it";
 import { Skeleton } from "@/components/ui/skeleton";
 import View from "@/components/View";
+import logo from "@/public/logo.png";
 const md=markdownit();
 export const experimental_ppr = true;
 
@@ -41,7 +42,7 @@ const page = async ({ params }: { params: { id: string } }) => {
               className="flex gap-2 items-center mb-3"
             >
               <Image
-                src={post.author.image}
+                src={post.author.image?post.author.image:logo}
                 alt="avathar"
                 width={64}
                 height={64}

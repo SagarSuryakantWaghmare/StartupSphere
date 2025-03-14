@@ -1,19 +1,21 @@
 "use client";
-import React, { useState } from "react";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
+
+import React, { useState, useActionState } from "react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import MDEditor from "@uiw/react-md-editor";
-import { Button } from "./ui/button";
-import { Send } from "react-feather";
+import { Button } from "@/components/ui/button";
+import { Send } from "lucide-react";
 import { formSchema } from "@/lib/validation";
-import { useActionState } from "react";
-import toast from "react-hot-toast"; // Import toast
 import { z } from "zod";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { createPitch } from "@/lib/actions";
+
 const StartupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [pitch, setPitch] = useState<string>(
-    "Briefly describe your idea and what problem it solves"
-  );
+  const [pitch, setPitch] = useState("");
+  const router = useRouter();
 
   const handleFormSubmit = async (prevState: any, formData: FormData) => {
     try {
@@ -26,28 +28,36 @@ const StartupForm = () => {
       };
 
       await formSchema.parseAsync(formValues);
-      console.log(formValues);
 
-      const result = await createIdea(prevState, formValues);
-      console.log(result);
+      const result = await createPitch(prevState, formData, pitch);
+      toast.success("Your startup pitch has been created successfully");
+      router.push(`/startup/${result._id}`);
 
-      toast.success("Startup idea submitted successfully!"); // Success toast
-      return { ...prevState, status: "Success", error: "" };
+      return result;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const fieldErrors = error.flatten().fieldErrors;
-        setErrors(fieldErrors as unknown as Record<string, string>);
-        toast.error("Validation failed. Please check the inputs."); // Error toast
-        return { ...prevState, error: "Validation failed", status: "Error" };
+        const fieldErorrs = error.flatten().fieldErrors;
+
+        setErrors(fieldErorrs as unknown as Record<string, string>);
+
+        toast.error("Please check your inputs and try again");
+
+        return { ...prevState, error: "Validation failed", status: "ERROR" };
       }
-      toast.error("An unexpected error has occurred."); // General error toast
-      return { ...prevState, error: "An unexpected error has occurred", status: "Error" };
+
+      toast.error("An unexpected error has occurred");
+
+      return {
+        ...prevState,
+        error: "An unexpected error has occurred",
+        status: "ERROR",
+      };
     }
   };
 
   const [state, formAction, isPending] = useActionState(handleFormSubmit, {
     error: "",
-    status: "Initial",
+    status: "INITIAL",
   });
 
   return (
@@ -63,6 +73,7 @@ const StartupForm = () => {
           required
           placeholder="Startup Title"
         />
+
         {errors.title && <p className="startup-form_error">{errors.title}</p>}
       </div>
 
@@ -75,9 +86,12 @@ const StartupForm = () => {
           name="description"
           className="startup-form_textarea"
           required
-          placeholder="Briefly describe your idea and what problem it solves"
+          placeholder="Startup Description"
         />
-        {errors.description && <p className="startup-form_error">{errors.description}</p>}
+
+        {errors.description && (
+          <p className="startup-form_error">{errors.description}</p>
+        )}
       </div>
 
       <div>
@@ -89,9 +103,12 @@ const StartupForm = () => {
           name="category"
           className="startup-form_input"
           required
-          placeholder="Startup Category (Tech, Health, Education..)"
+          placeholder="Startup Category (Tech, Health, Education...)"
         />
-        {errors.category && <p className="startup-form_error">{errors.category}</p>}
+
+        {errors.category && (
+          <p className="startup-form_error">{errors.category}</p>
+        )}
       </div>
 
       <div>
@@ -104,8 +121,8 @@ const StartupForm = () => {
           className="startup-form_input"
           required
           placeholder="Startup Image URL"
-          style={{ borderRadius: 20, overflow: "hidden" }}
         />
+
         {errors.link && <p className="startup-form_error">{errors.link}</p>}
       </div>
 
@@ -113,20 +130,31 @@ const StartupForm = () => {
         <label htmlFor="pitch" className="startup-form_label">
           Pitch
         </label>
+
         <MDEditor
           value={pitch}
-          onChange={(value) => setPitch(value || "")}
-          className="startup-form_textarea"
+          onChange={(value) => setPitch(value as string)}
           id="pitch"
           preview="edit"
+          height={300}
+          style={{ borderRadius: 20, overflow: "hidden" }}
           textareaProps={{
-            placeholder: "Briefly describe your idea and what problem it solves",
+            placeholder:
+              "Briefly describe your idea and what problem it solves",
+          }}
+          previewOptions={{
+            disallowedElements: ["style"],
           }}
         />
+
         {errors.pitch && <p className="startup-form_error">{errors.pitch}</p>}
       </div>
-      
-      <Button type="submit" className="startup-form_btn" disabled={isPending}>
+
+      <Button
+        type="submit"
+        className="startup-form_btn text-white"
+        disabled={isPending}
+      >
         {isPending ? "Submitting..." : "Submit Your Pitch"}
         <Send className="size-6 ml-2" />
       </Button>
