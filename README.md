@@ -1,4 +1,4 @@
-Here is your **enhanced README** without the license section:  
+
 
 ```md
 # 🚀 Next.js Project
