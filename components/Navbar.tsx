@@ -5,10 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { signOut, signIn } from "next-auth/react"; 
 import { useSession } from "next-auth/react";
-
 const Navbar = () => {
   const { data: session } = useSession(); 
-
   return (
     <header className="px-5 py-3 bg-white shadow-sm font-work-sans">
       <nav className="flex justify-between items-center">
