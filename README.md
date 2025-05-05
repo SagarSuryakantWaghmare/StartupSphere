@@ -1,6 +1,3 @@
-
-
-```md
 # 🚀 Next.js Project
 
 This is a **Next.js** project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
@@ -23,7 +20,6 @@ First, clone the repository:
 ```bash
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
-```
 
 ### Install Dependencies:
 
